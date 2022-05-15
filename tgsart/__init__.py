@@ -147,11 +147,17 @@ class WebPASCII:
 
     @property
     def asstring(self):
-        return self._asstring
+        if self._image_processed:
+            return self._asstring
+        else:
+            raise WebPASCII_Error('No image processed!')
 
     @property
     def aslist(self):
-        return self._aslist
+        if self._image_processed:
+            return self._aslist
+        else:
+            raise WebPASCII_Error('No image processed!')
 
     @property
     def out_size(self):
@@ -171,18 +177,50 @@ class WebPASCII:
     def save(self, path_to_new_file, quality=100):
         if self._image_processed:
             webp.save_image(self._out_image, path_to_new_file, quality=quality, preset=webp.WebPPreset.TEXT)
+        else:
+            raise WebPASCII_Error('No image processed!')
 
     def save_as_png(self, path_to_new_file):
         if self._image_processed:
             self._out_image.save(path_to_new_file)
+        else:
+            raise WebPASCII_Error('No image processed!')
 
     def save_inp_as_png(self, path_to_new_file):
-        self._imp_image.save(path_to_new_file)
+        """
+        Use to save loaded image as .png file
+        :param path_to_new_file:
+        :return:
+        """
+        if self._image_loaded:
+            self._imp_image.save(path_to_new_file)
+        else:
+            raise WebPASCII_Error('No image object loaded!')
+
+    def save_inp_as_webp(self, path_to_new_file, quality=100, preset=webp.WebPPreset.TEXT):
+        """
+        Use to save loaded image as .webp file
+        preset could be:
+                webp.WebPPreset.DEFAULT     Default
+                webp.WebPPreset.PICTURE     Indoor photo, portrait-like
+                webp.WebPPreset.PHOTO       Outdoor photo with natural lighting
+                webp.WebPPreset.DRAWING     Drawing with high-contrast details
+                webp.WebPPreset.ICON        Small-sized colourful image
+                webp.WebPPreset.TEXT        Text-like
+        :param path_to_new_file:
+        :return:
+        """
+        if self._image_loaded:
+            webp.save_image(self._imp_image, path_to_new_file, quality=quality, preset=preset)
+        else:
+            raise WebPASCII_Error('No image object loaded!')
 
     def save_as_txt(self, path_to_new_file):
         if self._image_processed:
             with open(path_to_new_file, 'w', encoding='utf-8', errors='ignore') as file:
                 file.write(self._asstring)
+        else:
+            raise WebPASCII_Error('No image processed!')
 
 if __name__ == '__main__':
     pass
