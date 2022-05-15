@@ -98,7 +98,7 @@ class WebPASCII:
                 y2 = int((j + 1) * self._h)
                 if j == self._rows - 1:
                     y2 = self._imp_image_height
-                self.aslist.append("")
+                self._aslist.append("")
                 for i in range(cols):
                     x1 = int(i * self._w)
                     x2 = int((i + 1) * self._w)
@@ -110,11 +110,11 @@ class WebPASCII:
                     avg = int(np.average(buf.reshape(w * h)))
                     gsval = symbols[int((avg * symblen) / 255)]
                     self._total_symbols += 1
-                    self.aslist[j] += gsval
+                    self._aslist[j] += gsval
             self._asstring = ''
-            for line in self.aslist:
-                self._asstring = f'{self.asstring}{line}\n'
-            self._asstring = self.asstring.strip('\n')
+            for line in self._aslist:
+                self._asstring = f'{self._asstring}{line}\n'
+            self._asstring = self._asstring.strip('\n')
             self._out_image = Image.new('L', (int(cols * self._text_size / 1.819),
                                               self._text_size * int(0.82 * self._out_image_height / self._h) + int(
                                                   self._text_size / 2)))
@@ -123,7 +123,7 @@ class WebPASCII:
                 font = ImageFont.truetype("consolab.ttf", self._text_size)
             else:
                 font = ImageFont.truetype("consola.ttf", self._text_size)
-            draw.text((0, 0), self.asstring, (255), font=font)
+            draw.text((0, 0), self._asstring, (255), font=font)
             self._out_image = self._out_image.resize((self._out_image_width, self._out_image_height),
                                                      Image.Resampling.LANCZOS)
             imgnp = np.asarray(self._out_image)
