@@ -62,8 +62,13 @@ class WebPASCII:
             return "No image loaded"
 
     def load_image(self, path_to_webp, mode='RGBA'):
+        if path_to_webp.lower().endswith('.webp'):
+            self._imp_image = webp.load_image(path_to_webp, mode)
+        elif path_to_webp.lower().endswith('.png'):
+            self._imp_image = Image.open(path_to_webp, mode)
+        else:
+            raise WebPASCII_Error('Unknown file type')
         self._image_loaded_source = path_to_webp
-        self._imp_image = webp.load_image(path_to_webp, mode)
         self._imp_image_mode = self._imp_image.mode
         self._imp_image_width = self._imp_image.size[0]
         self._imp_image_height = self._imp_image.size[1]
@@ -76,6 +81,8 @@ class WebPASCII:
 
     def process_image(self, cols=60, symbols=SymbolsPool.gscale29, add_color=True):
         if self._image_loaded:
+            if cols > self._imp_image_width or self._rows > self._imp_image_height:
+                raise WebPASCII_Error("cols number must be less than original picture's width")
             self._imp_image_gray = self._imp_image.convert('L')
             self._black_img = Image.new("L", (self._imp_image_height, self._imp_image_height), 0)
             self._alpha_channel = self._imp_image.split()[-1]
@@ -83,8 +90,6 @@ class WebPASCII:
             self._w = self._imp_image_width / cols
             self._h = self._w / self._scale
             self._rows = int(self._imp_image_height / self._h)
-            if cols > self._imp_image_width or self._rows > self._imp_image_height:
-                raise WebPASCII_Error("cols number must be less than original picture's width")
             self._aslist = []
             self._total_symbols = 0
             symblen = len(symbols) - 1
