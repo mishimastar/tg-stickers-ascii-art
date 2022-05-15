@@ -10,8 +10,9 @@ You can represent them as `string` , `.txt` , `.png` , `.wepb`.
 ## Requirements
 
 * [Python](https://www.python.org/downloads/) 3.7+
-* [webp](https://github.com/anibali/pywebp) 0.1.14+ 
+* [webp](https://github.com/anibali/pywebp) 0.1.4+ 
 * [Pillow](https://github.com/python-pillow/Pillow) 8.4.0+ 
+* [numpy](https://numpy.org/) 1.22.0+ 
 
 ## Examples
 
