@@ -14,6 +14,12 @@ You can represent them as `string` , `.txt` , `.png` , `.wepb`.
 * [Pillow](https://github.com/python-pillow/Pillow) 8.4.0+ 
 * [numpy](https://numpy.org/) 1.22.0+ 
 
+## Installation
+
+This package requires Python 3.7+ and can be installed with `pip`:
+```shell
+pip install tgsart
+```
 ## Examples
 
 Convert sticker to **colored** ASCII Art `.webp` file you can upload to Telegam as a sticker:
