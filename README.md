@@ -107,7 +107,7 @@ print(sticker_as_string)
 ```
 Output:
 <details>
-  <summary>Click to see sticker as string</summary>
+  <summary>Click to see sticker as string (equals to `.txt` file)</summary>
 
 
 ```python
