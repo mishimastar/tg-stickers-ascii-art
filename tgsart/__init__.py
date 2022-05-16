@@ -23,7 +23,6 @@ except ImportError:
     raise
 
 
-
 class SymbolsPool:
     gscale69 = """' ."`^",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"""
     gscale10 = " .:-=+*#%@"
@@ -41,9 +40,25 @@ class WebPASCII:
         self._text_size = 60
         self._out_image_width = None
         self._out_image_height = None
-
-    # def __repr__(self):
-    #     return ""
+        self._alpha_channel = None
+        self._out_image = None
+        self._white_img = None
+        self._blured_rgb = None
+        self._background = None
+        self._asstring = None
+        self._total_symbols = None
+        self._aslist = None
+        self._rows = None
+        self._h = None
+        self._w = None
+        self._imp_image_gray = None
+        self._black_img = None
+        self._scale = None
+        self._imp_image_height = None
+        self._imp_image_width = None
+        self._imp_image_mode = None
+        self._image_loaded_source = None
+        self._imp_image = None
 
     def __str__(self):
         if self._image_processed:
@@ -52,9 +67,9 @@ class WebPASCII:
                         Image dimensions (width, height): ({self._imp_image_width}, {self._imp_image_height})\n\
                         Calculated scale: {self._scale}\n\
                         Result image mode: {self._out_image}\n\
-                        Result image dimensions: (width, height): ({self._out_image_width}, {self._out_image_height})\n\
+                        Result image dimensions (width, height): ({self._out_image_width}, {self._out_image_height})\n\
                         Total symbols in image: {self._total_symbols}"
-        if self._image_loaded:
+        elif self._image_loaded:
             return f"Loaded image from: {self._image_loaded_source}\n\
             Image mode: {self._imp_image_mode}\n\
             Image dimensions (width, height): ({self._imp_image_width}, {self._imp_image_height})\n"
@@ -72,13 +87,12 @@ class WebPASCII:
         self._imp_image_mode = self._imp_image.mode
         self._imp_image_width = self._imp_image.size[0]
         self._imp_image_height = self._imp_image.size[1]
-        if self._out_image_width == None:
+        if self._out_image_width is None:
             self._out_image_width = self._imp_image_width
-        if self._out_image_height == None:
+        if self._out_image_height is None:
             self._out_image_height = self._imp_image_height
         self._scale = self._imp_image_width / self._imp_image_height - 0.2
         self._image_loaded = True
-
 
     def process_image(self, cols=60, symbols=SymbolsPool.gscale29, add_color=True):
         if self._image_loaded:
@@ -106,7 +120,7 @@ class WebPASCII:
                     if i == cols - 1:
                         x2 = self._imp_image_width
                     img = self._imp_image_gray.crop((x1, y1, x2, y2))
-                    buf = np.array(img)
+                    buf = np.asarray(img)
                     w, h = buf.shape
                     avg = int(np.average(buf.reshape(w * h)))
                     gsval = symbols[int((avg * symblen) / 255)]
@@ -124,7 +138,7 @@ class WebPASCII:
                 font = ImageFont.truetype("consolab.ttf", self._text_size)
             else:
                 font = ImageFont.truetype("consola.ttf", self._text_size)
-            draw.text((0, 0), self._asstring, (255), font=font)
+            draw.text((0, 0), self._asstring, 255, font=font)
             self._out_image = self._out_image.resize((self._out_image_width, self._out_image_height),
                                                      Image.Resampling.LANCZOS)
             imgnp = np.asarray(self._out_image)
@@ -134,13 +148,13 @@ class WebPASCII:
             if add_color:
                 self._blured_rgb = self._imp_image.convert('RGB').filter(ImageFilter.GaussianBlur(radius=5))
                 self._blured_rgb = self._blured_rgb.resize((self._out_image_width, self._out_image_height),
-                                                         Image.Resampling.LANCZOS)
+                                                           Image.Resampling.LANCZOS)
                 self._out_image = Image.composite(self._blured_rgb, self._background, self._out_image)
             else:
                 self._white_img = Image.new("RGB", self._out_image.size, (255, 255, 255))
                 self._out_image = Image.composite(self._white_img, self._background, self._out_image)
             self._alpha_channel = self._alpha_channel.resize((self._out_image_width, self._out_image_height),
-                                                       Image.Resampling.LANCZOS)
+                                                             Image.Resampling.LANCZOS)
             self._out_image.putalpha(self._alpha_channel)
             self._image_processed = True
         else:
@@ -176,12 +190,25 @@ class WebPASCII:
         self._text_size = int(new_text_size)
 
     def save(self, path_to_new_file, quality=100):
+        """
+        Use to save ASCII Art-sticker as .webp image
+
+        :param path_to_new_file:
+        :param quality:
+        :return:
+        """
         if self._image_processed:
             webp.save_image(self._out_image, path_to_new_file, quality=quality, preset=webp.WebPPreset.TEXT)
         else:
             raise WebPASCII_Error('No image processed!')
 
     def save_as_png(self, path_to_new_file):
+        """
+        Use to save ASCII Art-sticker as .png image
+
+        :param path_to_new_file:
+        :return:
+        """
         if self._image_processed:
             self._out_image.save(path_to_new_file)
         else:
@@ -190,6 +217,7 @@ class WebPASCII:
     def save_inp_as_png(self, path_to_new_file):
         """
         Use to save loaded image as .png file
+
         :param path_to_new_file:
         :return:
         """
@@ -201,13 +229,15 @@ class WebPASCII:
     def save_inp_as_webp(self, path_to_new_file, quality=100, preset=webp.WebPPreset.TEXT):
         """
         Use to save loaded image as .webp file
-        preset could be:
+
+        :param preset: could be:
                 webp.WebPPreset.DEFAULT     Default
                 webp.WebPPreset.PICTURE     Indoor photo, portrait-like
                 webp.WebPPreset.PHOTO       Outdoor photo with natural lighting
                 webp.WebPPreset.DRAWING     Drawing with high-contrast details
                 webp.WebPPreset.ICON        Small-sized colourful image
                 webp.WebPPreset.TEXT        Text-like
+        :param quality:
         :param path_to_new_file:
         :return:
         """
@@ -217,11 +247,18 @@ class WebPASCII:
             raise WebPASCII_Error('No image object loaded!')
 
     def save_as_txt(self, path_to_new_file):
+        """
+        Use to save ASCII Art-sticker as text file
+
+        :param path_to_new_file:
+        :return:
+        """
         if self._image_processed:
             with open(path_to_new_file, 'w', encoding='utf-8', errors='ignore') as file:
                 file.write(self._asstring)
         else:
             raise WebPASCII_Error('No image processed!')
+
 
 if __name__ == '__main__':
     pass
