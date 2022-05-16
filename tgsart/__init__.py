@@ -79,12 +79,13 @@ class WebPASCII:
         self._scale = self._imp_image_width / self._imp_image_height - 0.2
         self._image_loaded = True
 
+
     def process_image(self, cols=60, symbols=SymbolsPool.gscale29, add_color=True):
         if self._image_loaded:
             if cols > self._imp_image_width:
                 raise WebPASCII_Error("cols number must be less than original picture's width")
             self._imp_image_gray = self._imp_image.convert('L')
-            self._black_img = Image.new("L", (self._imp_image_height, self._imp_image_height), 0)
+            self._black_img = Image.new("L", (self._imp_image_width, self._imp_image_height), 0)
             self._alpha_channel = self._imp_image.split()[-1]
             self._imp_image_gray = Image.composite(self._imp_image_gray, self._black_img, self._alpha_channel)
             self._w = self._imp_image_width / cols
