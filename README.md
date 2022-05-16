@@ -4,7 +4,7 @@
 
 ## Overview
 
-`tg-stickers-ascii-art` allows you to convert Telegram stickers into their ASCII Art version.
+`tg-stickers-ascii-art` allows you to convert Telegram stickers into their [ASCII Art](https://en.wikipedia.org/wiki/ASCII_art) version.
 You can represent them as `string` , `.txt` , `.png` , `.wepb`.
 
 ## Requirements
