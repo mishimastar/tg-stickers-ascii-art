@@ -1,3 +1,5 @@
+import os
+
 try:
     from PIL import Image, ImageDraw, ImageFont, ImageFilter
 except ImportError:
@@ -194,13 +196,29 @@ class WebPASCII:
         Use to save ASCII Art-sticker as .webp image
 
         :param path_to_new_file:
-        :param quality:
+        :param quality: int up to 100 or 'auto' for max available quality (512 KB)
         :return:
         """
-        if self._image_processed:
-            webp.save_image(self._out_image, path_to_new_file, quality=quality, preset=webp.WebPPreset.TEXT)
+        if isinstance(quality, int):
+            if self._image_processed:
+                webp.save_image(self._out_image, path_to_new_file, quality=quality, preset=webp.WebPPreset.TEXT)
+            else:
+                raise WebPASCII_Error('No image processed!')
+        elif isinstance(quality, str):
+            if quality == 'auto':
+                if self._image_processed:
+                    quality = 100
+                    webp.save_image(self._out_image, path_to_new_file, quality=quality, preset=webp.WebPPreset.TEXT)
+                    while os.stat(path_to_new_file).st_size >= 524288:
+                        quality -= 10
+                        webp.save_image(self._out_image, path_to_new_file, quality=quality, preset=webp.WebPPreset.TEXT)
+                else:
+                    raise WebPASCII_Error('No image processed!')
+            else:
+                raise WebPASCII_Error('Unknown quality parameter')
         else:
-            raise WebPASCII_Error('No image processed!')
+            raise WebPASCII_Error('Unknown quality parameter type')
+
 
     def save_as_png(self, path_to_new_file):
         """
@@ -237,14 +255,29 @@ class WebPASCII:
                 webp.WebPPreset.DRAWING     Drawing with high-contrast details
                 webp.WebPPreset.ICON        Small-sized colourful image
                 webp.WebPPreset.TEXT        Text-like
-        :param quality:
+        :param quality: int up to 100 or 'auto' for max available quality (512 KB)
         :param path_to_new_file:
         :return:
         """
-        if self._image_loaded:
-            webp.save_image(self._imp_image, path_to_new_file, quality=quality, preset=preset)
+        if isinstance(quality, int):
+            if self._image_loaded:
+                webp.save_image(self._imp_image, path_to_new_file, quality=quality, preset=preset)
+            else:
+                raise WebPASCII_Error('No image processed!')
+        elif isinstance(quality, str):
+            if quality == 'auto':
+                if self._image_loaded:
+                    quality = 100
+                    webp.save_image(self._imp_image, path_to_new_file, quality=quality, preset=preset)
+                    while os.stat(path_to_new_file).st_size >= 524288:
+                        quality -= 10
+                        webp.save_image(self._imp_image, path_to_new_file, quality=quality, preset=preset)
+                else:
+                    raise WebPASCII_Error('No image loaded!')
+            else:
+                raise WebPASCII_Error('Unknown quality parameter')
         else:
-            raise WebPASCII_Error('No image object loaded!')
+            raise WebPASCII_Error('Unknown quality parameter type')
 
     def save_as_txt(self, path_to_new_file):
         """

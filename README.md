@@ -39,7 +39,7 @@ import tgsart
 sticker_gs = tgsart.WebPASCII()
 sticker_gs.load_image('banana.webp')
 sticker_gs.process_image(cols=60, add_color=False) 
-sticker_gs.save('banana60gray.webp'))
+sticker_gs.save('banana60gray.webp')
 ```
 
 <img src="https://raw.githubusercontent.com/mishimastar/tg-stickers-ascii-art/master/doc/banana60various.png" alt="tg-stickers-ascii-art logo" width="100%" />
@@ -51,11 +51,11 @@ import tgsart
 sticker = tgsart.WebPASCII()
 sticker.load_image('banana.webp')
 sticker.process_image(cols=40, add_color=True) 
-sticker.save('banana40C.webp'))
+sticker.save('banana40C.webp')
 sticker.process_image(cols=60, add_color=True) 
-sticker.save('banana60C.webp'))
+sticker.save('banana60C.webp')
 sticker.process_image(cols=80, add_color=True) 
-sticker.save('banana80C.webp'))
+sticker.save('banana80C.webp')
 ```
 
 <img src="https://raw.githubusercontent.com/mishimastar/tg-stickers-ascii-art/master/doc/banana406080.png" alt="tg-stickers-ascii-art logo" width="100%" />
@@ -69,7 +69,7 @@ from tgsart import SymbolsPool
 sticker = tgsart.WebPASCII()
 sticker.load_image('banana.webp')
 sticker.process_image(cols=60, symbols=SymbolsPool.gscale29, add_color=True) 
-sticker.save('banana60C.webp'))
+sticker.save('banana60C.webp')
 ```
 There are 3 predefined `symbols` strings (`SymbolsPool.gscale29` is `default`):
 
@@ -102,6 +102,7 @@ import tgsart
 sticker = tgsart.WebPASCII()
 sticker.load_image('banana.webp')
 sticker.save_inp_as_png('banana.png')
+sticker.save_inp_as_webp('banana_copy.webp')
 sticker.process_image(cols=60) 
 sticker.save('banana60C.webp')
 sticker.save_as_png('banana60C.png')
@@ -185,3 +186,21 @@ Output:
 """
 ```
 </details>
+
+If you want to upload the processed sticker back to Telegram, you should know that the maximum size of the uploaded sticker is [limited to 512 kilobytes.](https://core.telegram.org/bots/api#uploadstickerfile)
+You can adjust the size of the processed sticker automatically setting `quality` parameter as `auto`:
+
+```python
+sticker.save('banana60C.webp', quality='auto')
+sticker.save_inp_as_webp('banana.webp', quality='auto')
+```
+
+Or set it as you wish (default `quality=100`):
+```python
+sticker.save('banana60C.webp')  # Using default quality=100
+sticker.save('banana60C.webp', quality=80)
+sticker.save('banana60C.webp', quality=50)
+sticker.save_inp_as_webp('banana.webp')  # Using default quality=100
+sticker.save_inp_as_webp('banana.webp', quality=70)
+sticker.save_inp_as_webp('banana.webp', quality=60)
+```
